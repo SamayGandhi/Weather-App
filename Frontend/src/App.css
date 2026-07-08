@@ -1,0 +1,233 @@
+/* --- 1. CSS Variables for Easy Theming --- */
+:root {
+  --primary-color: #007bff;
+  --primary-hover: #0056b3;
+  --success-color: #28a745;
+  --success-hover: #218838;
+  --error-color: #dc3545;
+  --bg-color: #f0f4f8;
+  --card-bg: #ffffff;
+  --text-main: #333333;
+  --text-muted: #555555;
+  --border-color: #cccccc;
+}
+
+/* --- 2. Global Resets --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg-color);
+  margin: 0;
+  color: var(--text-main);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app-container {
+  text-align: center;
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* --- 3. Header Styles --- */
+.app-header {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+/* --- 4. Navigation Links --- */
+.nav-links {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: var(--primary-color);
+  background-color: var(--card-bg);
+  border: 2px solid var(--primary-color);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  background-color: var(--primary-color);
+  color: #ffffff;
+}
+
+/* --- 5. Search Section --- */
+.search-section {
+  margin-bottom: 30px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-section input {
+  padding: 12px 15px;
+  width: 100%;
+  max-width: 350px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background-color: var(--card-bg);
+  color: var(--text-main);
+  font-size: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Input Focus State for Accessibility */
+.search-section input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+.search-section button {
+  padding: 12px 24px;
+  background-color: var(--success-color);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+.search-section button:hover {
+  background-color: var(--success-hover);
+}
+
+.search-section button:active {
+  transform: scale(0.98);
+}
+
+/* --- 6. Status Messages (Loading & Error) --- */
+.loading-text {
+  font-size: 18px;
+  color: var(--primary-color);
+  font-weight: 600;
+  margin-top: 20px;
+  animation: pulse 1.5s infinite; /* Smooth breathing effect */
+}
+
+@keyframes pulse {
+  0% { opacity: 0.6; }
+  50% { opacity: 1; }
+  100% { opacity: 0.6; }
+}
+
+.error-text {
+  font-size: 16px;
+  color: var(--error-color);
+  background-color: #f8d7da;
+  padding: 12px 20px;
+  border-radius: 6px;
+  border: 1px solid #f5c6cb;
+  margin: 20px auto;
+  max-width: 500px;
+  font-weight: 500;
+}
+
+/* --- 7. Weather Card Styles --- */
+.weather-card {
+  background-color: var(--card-bg);
+  color: var(--text-main);
+  border: 1px solid #e1e4e8;
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.08); 
+  display: inline-block;
+  min-width: 300px;
+  margin-top: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Hover effect */
+}
+
+.weather-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.12);
+}
+
+.weather-card h2, 
+.weather-card h3 {
+  margin-top: 0;
+  color: var(--primary-color);
+  font-weight: 700;
+}
+
+.weather-card h1 {
+  font-size: 48px;
+  margin: 15px 0;
+  font-weight: 800;
+}
+
+.weather-card p {
+  font-size: 18px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.weather-card strong {
+  color: var(--text-main);
+}
+
+/* Dashboard Component Specific Adjustments */
+.weather-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.weather-container form {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+/* --- 8. Mobile Responsiveness --- */
+@media (max-width: 600px) {
+  .search-section,
+  .weather-container form {
+    flex-direction: column;
+    width: 100%;
+    padding: 0 15px;
+  }
+  
+  .search-section input,
+  .weather-container form input {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 10px;
+  }
+  
+  .search-section button,
+  .weather-container form button {
+    width: 100%;
+  }
+
+  .weather-card {
+    width: 90%;
+    min-width: auto;
+  }
+}
