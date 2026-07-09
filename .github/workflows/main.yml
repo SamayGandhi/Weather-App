@@ -1,0 +1,29 @@
+name: Weather App CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  build-and-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Check Frontend Build
+      run: |
+        cd Frontend
+        npm install
+        npm run build
+
+    - name: Check Backend Setup
+      run: |
+        cd backend
+        npm install --legacy-peer-deps
