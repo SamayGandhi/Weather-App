@@ -10,6 +10,7 @@ const weatherRoutes = require('./routes/weather');
 const favoritesRoutes = require('./routes/favorites');
 const graphqlMiddleware = require('./graphql/weatherGraphQL');
 const setupSockets = require('./sockets/index');
+const weatherRedisRoute = require('./routes/weatherRedis');
 
 // --- WEBSOCKET IMPORTS ---
 const http = require('http');
@@ -46,6 +47,8 @@ app.use('/', favoritesRoutes);
 
 // Use GraphQL
 app.use('/graphql', graphqlMiddleware);
+
+app.use('/api', weatherRedisRoute);
 
 // Setup WebSockets
 setupSockets(io);
