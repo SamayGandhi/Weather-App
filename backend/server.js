@@ -3,8 +3,12 @@ const express = require('express');
 const cors = require('cors');
 const passport = require('passport');
 
+//--- MONGODB CONNECTION ---//
+const connectDB = require('./config/db');
+connectDB(); 
+
 // Import Modules
-require('./config/passport'); // Initialize passport strategy
+require('./config/passport');
 const authRoutes = require('./routes/auth');
 const weatherRoutes = require('./routes/weather');
 const favoritesRoutes = require('./routes/favorites');
@@ -49,6 +53,9 @@ app.use('/', favoritesRoutes);
 app.use('/graphql', graphqlMiddleware);
 
 app.use('/api', weatherRedisRoute);
+app.use('/', require('./routes/settings'));
+
+require('./cron/weatherCron'); 
 
 // Setup WebSockets
 setupSockets(io);

@@ -17,9 +17,13 @@
     "express-graphql": "^0.12.0",
     "graphql": "^17.0.2",
     "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.7.4",
+    "node-cron": "^4.6.0",
+    "nodemailer": "^9.0.3",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "redis": "^6.1.0",
-    "socket.io": "^4.8.3"
+    "socket.io": "^4.8.3",
+    "twilio": "^6.0.2"
   }
 }

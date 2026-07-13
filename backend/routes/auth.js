@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const passport = require('passport');
 const router = express.Router();
 const SECRET_KEY = process.env.JWT_SECRET;
+const CLIENT_URL = process.env.CLIENT_URL;
 
 // --- 2. AUTHENTICATION ROUTES (TRADITIONAL & GOOGLE) ---
 router.post('/api/auth/login', (req, res) => {
@@ -18,22 +19,23 @@ router.post('/api/auth/login', (req, res) => {
 });
 
 router.get('/auth/google',
-  passport.authenticate('google', { scope: ['profile', 'email'], session: false })
+  passport.authenticate('google', { scope: ['profile', 'email'], prompt: 'select_account' })
 );
 
 router.get('/auth/google/callback', 
   passport.authenticate('google', { session: false, failureRedirect: '/api/auth/error' }),
   (req, res) => {
     const token = jwt.sign(
-        { id: req.user.id, email: req.user.email, name: req.user.name }, 
+        { 
+            id: req.user._id, 
+            email: req.user.email, 
+            name: req.user.displayName
+        }, 
         SECRET_KEY, 
         { expiresIn: '1h' }
     );
-    res.status(200).json({
-        message: "Google OAuth2 Login Successful",
-        user: req.user,
-        token: token
-    });
+    
+    res.redirect(`${CLIENT_URL}?token=${token}`);
   }
 );
 
