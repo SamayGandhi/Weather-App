@@ -144,7 +144,7 @@ const NotificationSettings = () => {
             type="text" 
             value={phone} 
             onChange={(e) => setPhone(e.target.value)}
-            placeholder="+917990059807"
+            placeholder="+91**********"
             style={{
               width: '100%',
               padding: '12px 15px',
