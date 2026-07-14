@@ -1,7 +1,10 @@
 require('dotenv').config();
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
 const express = require('express');
 const cors = require('cors');
 const passport = require('passport');
+
 
 //--- MONGODB CONNECTION ---//
 const connectDB = require('./config/db');
@@ -35,7 +38,27 @@ const io = new Server(server, {
 });
 
 // Middleware
-app.use(cors());
+
+// CSRF Protection & CORS Hardening
+const allowedOrigins = [
+  'https://weather-app-kappa-blond-45.vercel.app',
+  'http://localhost:3000' // for Local testing
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Blocked by CORS policy (CSRF Protection Active)'));
+    }
+  },
+  credentials: true, 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], 
+  allowedHeaders: ['Content-Type', 'Authorization'] 
+}));
+app.use(helmet()); // Secure the HTTP Header and Block the XSS Attacks
+app.use(mongoSanitize()); // Prevent NoSQL Injection
 app.use(express.json());
 app.use(passport.initialize());
 
