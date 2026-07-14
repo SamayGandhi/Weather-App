@@ -10,6 +10,7 @@ import SearchBar from './components/SearchBar';
 const WeatherDisplay = lazy(() => import('./components/WeatherDisplay'));
 const FavoritesList = lazy(() => import('./components/FavoritesList'));
 const NotificationSettings = lazy(() => import('./components/NotificationSettings'));
+const Footer = lazy(() => import('./components/Footer'));
 
 import './App.css';
 
@@ -196,7 +197,7 @@ function App() {
 
   return (
     <Router>
-      <div className="app-container" style={{ padding: '0 15px' }}>
+      <div className="app-container" style={{ padding: '0 15px', minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
         
         <header className="premium-header-mobile" style={{ 
           display: 'flex', 
@@ -412,6 +413,7 @@ function App() {
               <Route path="/settings" element={<NotificationSettings />} />
             </Routes>
         </Suspense>
+        <Footer />
         </div>
     </Router>
   );
