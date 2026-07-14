@@ -1,11 +1,16 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, NavLink } from 'react-router-dom';
 import axios from 'axios';
 import { io } from 'socket.io-client';
 import SearchBar from './components/SearchBar';
-import WeatherDisplay from './components/WeatherDisplay';
-import FavoritesList from './components/FavoritesList';
-import NotificationSettings from './components/NotificationSettings';
+
+// ===================================================================
+// LAZY LOADING IMPLEMENTATION 
+// ===================================================================
+const WeatherDisplay = lazy(() => import('./components/WeatherDisplay'));
+const FavoritesList = lazy(() => import('./components/FavoritesList'));
+const NotificationSettings = lazy(() => import('./components/NotificationSettings'));
+
 import './App.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
@@ -277,9 +282,10 @@ function App() {
                 }}
               >
                 <img 
-                  src="https://developers.google.com/identity/images/g-logo.png" 
-                  alt="Google" 
-                  style={{ width: '18px' }}
+                src="https://developers.google.com/identity/images/g-logo.png" 
+                alt="Google" 
+                style={{ width: '18px' }}
+                loading="lazy" 
                 />
                 Sign in with Google
               </button>
@@ -327,82 +333,85 @@ function App() {
           {token && <NavLink to="/settings">Settings</NavLink>}
         </nav>
 
-        <Routes>
-          <Route path="/" element={
-            <main style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <SearchBar onSearch={handleSearch} />
-              
-              {loading && <p className="loading-text" style={{ textAlign: 'center', marginTop: '20px', fontWeight: 'bold', color: '#555' }}>Fetching live weather...</p>}
-              
-              {error && (
-                <div style={{ 
-                  textAlign: 'center', 
-                  padding: '30px 20px', 
-                  background: '#fff0f0', 
-                  borderRadius: '16px', 
-                  color: '#d32f2f', 
-                  margin: '20px auto', 
-                  maxWidth: '500px', 
-                  boxShadow: '0 8px 24px rgba(220, 53, 69, 0.1)',
-                  border: '1px solid #ffcdd2',
-                  animation: 'slideUpFade 0.4s ease-out forwards'
-                }}>
-                  <span style={{ fontSize: '48px', display: 'block', marginBottom: '15px' }}>🤷‍♂️</span>
-                  <h3 style={{ margin: '0 0 10px 0', fontSize: '20px', fontWeight: '800' }}>City Not Found</h3>
-                  <p style={{ margin: 0, fontWeight: '500', lineHeight: '1.5', color: '#5a1015' }}>{error}</p>
-                </div>
-              )}
+        {/* Suspense is used to show a loading state while lazy-loaded components are being fetched */}
+        <Suspense fallback={<p style={{ textAlign: 'center', marginTop: '40px', fontWeight: 'bold', color: '#555' }}>Loading Page...</p>}>
+          <Routes>
+            <Route path="/" element={
+              <main style={{ marginTop: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <SearchBar onSearch={handleSearch} />
+                
+                {loading && <p className="loading-text" style={{ textAlign: 'center', marginTop: '20px', fontWeight: 'bold', color: '#555' }}>Fetching live weather...</p>}
+                
+                {error && (
+                  <div style={{ 
+                    textAlign: 'center', 
+                    padding: '30px 20px', 
+                    background: '#fff0f0', 
+                    borderRadius: '16px', 
+                    color: '#d32f2f', 
+                    margin: '20px auto', 
+                    maxWidth: '500px', 
+                    boxShadow: '0 8px 24px rgba(220, 53, 69, 0.1)',
+                    border: '1px solid #ffcdd2',
+                    animation: 'slideUpFade 0.4s ease-out forwards'
+                  }}>
+                    <span style={{ fontSize: '48px', display: 'block', marginBottom: '15px' }}>🤷‍♂️</span>
+                    <h3 style={{ margin: '0 0 10px 0', fontSize: '20px', fontWeight: '800' }}>City Not Found</h3>
+                    <p style={{ margin: 0, fontWeight: '500', lineHeight: '1.5', color: '#5a1015' }}>{error}</p>
+                  </div>
+                )}
 
-              {weatherData && !loading && (
-                <WeatherDisplay 
-                  data={weatherData} 
-                  onSaveSuccess={() => setRefreshFavorites(!refreshFavorites)} 
-                />
-              )}
-            </main>
-          } />
-          
-          <Route path="/about" element={
-            <div className="premium-glass-card" style={{
-        background: 'rgba(255, 255, 255, 0.95)',
-        backdropFilter: 'blur(20px)',
-        borderRadius: '32px',
-        padding: '40px 30px',
-        boxShadow: '0 12px 35px rgba(0,0,0,0.06), inset 0 2px 4px rgba(255,255,255,0.7)',
-        border: '1px solid rgba(226, 232, 240, 0.9)',
-        width: '100%',
-        maxWidth: '650px',
-        margin: '20px auto',
-        textAlign: 'center',
-        boxSizing: 'border-box',
-        animation: 'slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards'
-      }}>
-        <h2 style={{ fontSize: '28px', color: '#0f172a', fontWeight: '800', marginBottom: '20px' }}>
-          About This App
-        </h2>
-        <p style={{ fontSize: '16px', color: '#475569', lineHeight: '1.7', fontWeight: '500', marginBottom: '25px' }}>
-          A full-stack Weather Forecast System built with modern web technologies like React and Node.js.
-        </p>
-        
-        <div style={{ background: '#f8fafc', padding: '25px', borderRadius: '24px', border: '1px dashed #cbd5e1' }}>
-          <h3 style={{ fontSize: '15px', color: '#334155', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '15px' }}>
-            Core Features
-          </h3>
-          <p style={{ fontSize: '15px', color: '#64748b', lineHeight: '1.8', fontWeight: '600', margin: 0 }}>
-            Redis Caching, Message Queues (Twilio/MailHog), MongoDB, OAuth2, WebSockets, and GraphQL.
+                {weatherData && !loading && (
+                  <WeatherDisplay 
+                    data={weatherData} 
+                    onSaveSuccess={() => setRefreshFavorites(!refreshFavorites)} 
+                  />
+                )}
+              </main>
+            } />
+            
+            <Route path="/about" element={
+              <div className="premium-glass-card" style={{
+          background: 'rgba(255, 255, 255, 0.95)',
+          backdropFilter: 'blur(20px)',
+          borderRadius: '32px',
+          padding: '40px 30px',
+          boxShadow: '0 12px 35px rgba(0,0,0,0.06), inset 0 2px 4px rgba(255,255,255,0.7)',
+          border: '1px solid rgba(226, 232, 240, 0.9)',
+          width: '100%',
+          maxWidth: '650px',
+          margin: '20px auto',
+          textAlign: 'center',
+          boxSizing: 'border-box',
+          animation: 'slideUpFade 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards'
+        }}>
+          <h2 style={{ fontSize: '28px', color: '#0f172a', fontWeight: '800', marginBottom: '20px' }}>
+            About This App
+          </h2>
+          <p style={{ fontSize: '16px', color: '#475569', lineHeight: '1.7', fontWeight: '500', marginBottom: '25px' }}>
+            A full-stack Weather Forecast System built with modern web technologies like React and Node.js.
           </p>
+          
+          <div style={{ background: '#f8fafc', padding: '25px', borderRadius: '24px', border: '1px dashed #cbd5e1' }}>
+            <h3 style={{ fontSize: '15px', color: '#334155', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '1px', marginBottom: '15px' }}>
+              Core Features
+            </h3>
+            <p style={{ fontSize: '15px', color: '#64748b', lineHeight: '1.8', fontWeight: '600', margin: 0 }}>
+              Redis Caching, Message Queues (Twilio/MailHog), MongoDB, OAuth2, WebSockets, and GraphQL.
+            </p>
+          </div>
         </div>
-      </div>
-            } />
+              } />
 
-            <Route path="/favorites" element={
-              <FavoritesList 
-                onSelectCity={selectFavoriteCity} 
-                refreshTrigger={refreshFavorites} 
-              />
-            } />
-            <Route path="/settings" element={<NotificationSettings />} />
-          </Routes>
+              <Route path="/favorites" element={
+                <FavoritesList 
+                  onSelectCity={selectFavoriteCity} 
+                  refreshTrigger={refreshFavorites} 
+                />
+              } />
+              <Route path="/settings" element={<NotificationSettings />} />
+            </Routes>
+        </Suspense>
         </div>
     </Router>
   );

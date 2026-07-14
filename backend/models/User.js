@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     googleId: {
         type: String,
         required: true,
-        unique: true
+        unique: true // (MongoDB automatically creates an index for unique fields)
     },
     displayName: {
         type: String,
@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        index: true //Query Optimization
     },
     avatar: {
         type: String
