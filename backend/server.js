@@ -42,7 +42,8 @@ const io = new Server(server, {
 // CSRF Protection & CORS Hardening
 const allowedOrigins = [
   'https://weather-app-kappa-blond-45.vercel.app',
-  'http://localhost:3000' // for Local testing
+  'http://localhost:3000',
+  'http://localhost:5173' // for Local testing
 ];
 
 app.use(cors({
@@ -57,9 +58,19 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'DELETE'], 
   allowedHeaders: ['Content-Type', 'Authorization'] 
 }));
+
 app.use(helmet()); // Secure the HTTP Header and Block the XSS Attacks
-app.use(mongoSanitize()); // Prevent NoSQL Injection
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Prevent NoSQL Injection 
+app.use((req, res, next) => {
+    if (req.body) mongoSanitize.sanitize(req.body);
+    if (req.params) mongoSanitize.sanitize(req.params);
+    if (req.query) mongoSanitize.sanitize(req.query);
+    next();
+});
+
 app.use(passport.initialize());
 
 app.use((req, res, next) => {
