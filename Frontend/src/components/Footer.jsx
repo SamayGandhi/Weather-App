@@ -31,7 +31,7 @@ const Footer = () => {
         flexWrap: 'wrap' 
       }}>
         <a 
-          href="https://github.com/your-github-username" 
+          href="https://github.com/SamayGandhi" 
           target="_blank" 
           rel="noopener noreferrer"
           style={{ color: '#0f172a', textDecoration: 'none', fontWeight: '700', transition: 'color 0.2s' }}
@@ -40,7 +40,7 @@ const Footer = () => {
         </a>
         <span style={{ color: '#cbd5e1' }}>|</span>
         <a 
-          href="https://linkedin.com/in/your-linkedin-username" 
+          href="https://www.linkedin.com/in/samay-gandhi-1b468b2b8" 
           target="_blank" 
           rel="noopener noreferrer"
           style={{ color: '#0f172a', textDecoration: 'none', fontWeight: '700', transition: 'color 0.2s' }}
